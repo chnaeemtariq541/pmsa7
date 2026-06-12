@@ -124,7 +124,7 @@ export default function AuthPage() {
             <Sparkles className="w-3.5 h-3.5" /> Next-Gen Agile Suite
           </span>
           <h1 className="text-4xl lg:text-5xl font-black text-slate-100 tracking-tight leading-none">
-            Jutt Project Management System - Your Project Partner Application
+            Sheikho Project Management System - Your Project Partner Application
           </h1>
           <p className="text-slate-400 text-sm leading-relaxed">
             Unify codeboards, timesheets, sprints, client portals, and productivity metrics in a single, high-fidelity corporate command console.
