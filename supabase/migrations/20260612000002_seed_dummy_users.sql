@@ -33,7 +33,7 @@ VALUES
     '{"name": "Javaid Khadim", "designation": "Project Manager", "avatar_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150"}'::jsonb,
     'authenticated', 'authenticated', now(), now()
   )
-ON CONFLICT (email) DO UPDATE SET 
+ON CONFLICT (id) DO UPDATE SET 
   encrypted_password = excluded.encrypted_password,
   raw_user_meta_data = excluded.raw_user_meta_data;
 
@@ -85,7 +85,7 @@ VALUES
     '{"name": "Usman Ghani", "designation": "DevOps Engineer", "avatar_url": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150"}'::jsonb,
     'authenticated', 'authenticated', now(), now()
   )
-ON CONFLICT (email) DO UPDATE SET 
+ON CONFLICT (id) DO UPDATE SET 
   encrypted_password = excluded.encrypted_password,
   raw_user_meta_data = excluded.raw_user_meta_data;
 
@@ -123,6 +123,6 @@ VALUES
     '{"name": "Rizwan Ahmed", "designation": "IT Coordinator", "avatar_url": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150"}'::jsonb,
     'authenticated', 'authenticated', now(), now()
   )
-ON CONFLICT (email) DO UPDATE SET 
+ON CONFLICT (id) DO UPDATE SET 
   encrypted_password = excluded.encrypted_password,
   raw_user_meta_data = excluded.raw_user_meta_data;
