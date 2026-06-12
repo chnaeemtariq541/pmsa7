@@ -50,6 +50,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [originalRole, setOriginalRole] = useState<UserRole>('project_manager');
   const [org, setOrg] = useState<Organization | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [allProjects, setAllProjects] = useState<Project[]>([]);
   const [activeProject, setActiveProjectState] = useState<Project | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
@@ -128,7 +129,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
           // Fetch projects
           const orgProjects = await db.getProjects(activeOrg.id);
-          setProjects(orgProjects);
+          setAllProjects(orgProjects);
           
           const defaultProject = orgProjects.find(p => p.id === 'proj-pmsa7') || orgProjects[0] || null;
           setActiveProjectState(defaultProject);
@@ -174,12 +175,65 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [timer.isRunning, timer.startTime]);
 
+  // Reactive Filtering of Projects by User Assignments
+  useEffect(() => {
+    if (!org || !user) {
+      setProjects([]);
+      return;
+    }
+
+    const filterProjects = async () => {
+      try {
+        // Super Admins and Org Admins see all projects
+        if (role === 'super_admin' || role === 'org_admin') {
+          setProjects(allProjects);
+          return;
+        }
+
+        const filtered: Project[] = [];
+        for (const p of allProjects) {
+          // Check project members
+          const members = await db.getProjectMembers(p.id);
+          const isMember = members.some(m => m.user_id === user.id);
+
+          if (isMember) {
+            filtered.push(p);
+            continue;
+          }
+
+          // Check clients mapping
+          const clients = await db.getProjectClients(p.id);
+          const isClientAssigned = clients.some(
+            c => c.email.toLowerCase() === user.email.toLowerCase()
+          );
+
+          if (isClientAssigned) {
+            filtered.push(p);
+          }
+        }
+
+        setProjects(filtered);
+
+        // Sync active project to ensure it belongs to the filtered list
+        if (activeProject && !filtered.some(p => p.id === activeProject.id)) {
+          setActiveProjectState(filtered[0] || null);
+        } else if (!activeProject && filtered.length > 0) {
+          setActiveProjectState(filtered[0]);
+        }
+      } catch (err) {
+        console.error('Error filtering projects for user context:', err);
+      }
+    };
+
+    filterProjects();
+  }, [allProjects, user, role, org]);
+
   // Reload Projects
   const reloadProjects = async () => {
     if (!org) return;
     try {
       const orgProjects = await db.getProjects(org.id);
-      setProjects(orgProjects);
+      setAllProjects(orgProjects);
       // Synchronize active project
       if (activeProject) {
         const recheck = orgProjects.find(p => p.id === activeProject.id);
