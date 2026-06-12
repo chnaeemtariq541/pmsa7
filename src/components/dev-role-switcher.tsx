@@ -6,12 +6,15 @@ import { UserRole } from '@/types';
 import { Shield, RefreshCw, Database, Eye, EyeOff } from 'lucide-react';
 
 export const DevRoleSwitcher = () => {
-  const { role, switchRole, isDbMock, user } = useApp();
+  const { role, switchRole, isDbMock, user, originalRole } = useApp();
   const [isOpen, setIsOpen] = useState(false);
 
+  if (originalRole !== 'super_admin') {
+    return null;
+  }
+
   const roles: { value: UserRole; label: string; desc: string; color: string }[] = [
-    { value: 'super_admin', label: 'Super Admin', desc: 'Manage orgs & system access', color: 'bg-red-500/10 text-red-500 border-red-500/20' },
-    { value: 'org_admin', label: 'Org Admin', desc: 'Create projects, invite team', color: 'bg-orange-500/10 text-orange-500 border-orange-500/20' },
+    { value: 'super_admin', label: 'Admin', desc: 'Manage orgs & system access', color: 'bg-red-500/10 text-red-500 border-red-500/20' },
     { value: 'project_manager', label: 'Project Manager', desc: 'Manage sprints, boards & tasks', color: 'bg-blue-500/10 text-blue-500 border-blue-500/20' },
     { value: 'team_member', label: 'Team Member', desc: 'Edit tasks & log time', color: 'bg-green-500/10 text-green-500 border-green-500/20' },
     { value: 'client', label: 'Client', desc: 'Read-only progress & comments', color: 'bg-purple-500/10 text-purple-500 border-purple-500/20' },
@@ -31,7 +34,7 @@ export const DevRoleSwitcher = () => {
           <div className="flex items-center justify-between mb-3 border-b border-border pb-2">
             <div className="flex items-center gap-2">
               <Shield className="w-5 h-5 text-primary" />
-              <span className="font-semibold text-sm">Review Sandbox Tools</span>
+              <span className="font-semibold text-sm">Admin Impersonation Console</span>
             </div>
             <button 
               onClick={() => setIsOpen(false)}
@@ -105,10 +108,10 @@ export const DevRoleSwitcher = () => {
       ) : (
         <button
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 bg-primary hover:bg-primary/95 text-primary-foreground py-2.5 px-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
+          className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white py-2.5 px-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
         >
           <Shield className="w-4 h-4" />
-          <span className="text-xs font-semibold">Test Roles: {roles.find(r => r.value === role)?.label}</span>
+          <span className="text-xs font-semibold">Impersonate: {roles.find(r => r.value === role)?.label}</span>
           <Eye className="w-4 h-4 ml-1 opacity-70" />
         </button>
       )}

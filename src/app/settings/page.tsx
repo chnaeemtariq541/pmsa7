@@ -30,7 +30,7 @@ export default function SettingsPage() {
   const [inviteSuccess, setInviteSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const isAdmin = role === 'super_admin' || role === 'org_admin';
+  const isAdmin = role === 'super_admin';
 
   const fetchMembers = async () => {
     if (!org) return;
@@ -244,8 +244,7 @@ export default function SettingsPage() {
                               onChange={(e) => handleUpdateMemberRole(m.id, e.target.value as UserRole)}
                               className="bg-muted text-foreground text-[10px] font-semibold py-1 px-2.5 rounded-lg border border-border/60 focus:outline-none cursor-pointer disabled:opacity-75"
                             >
-                              <option value="super_admin">Super Admin</option>
-                              <option value="org_admin">Org Admin</option>
+                              <option value="super_admin">Admin</option>
                               <option value="project_manager">Project Manager</option>
                               <option value="team_member">Team Member</option>
                               <option value="client">Client</option>
@@ -326,8 +325,7 @@ export default function SettingsPage() {
                     onChange={(e) => setInviteRole(e.target.value as UserRole)}
                     className="w-full bg-muted border border-border focus:border-primary focus:ring-1 focus:ring-primary rounded-xl text-xs p-3 text-foreground cursor-pointer"
                   >
-                    <option value="super_admin">Super Admin (System full access)</option>
-                    <option value="org_admin">Org Admin (Invites + Settings)</option>
+                    <option value="super_admin">Admin (System full access)</option>
                     <option value="project_manager">Project Manager (Sprints + tasks)</option>
                     <option value="team_member">Team Member (Edit assigned tasks)</option>
                     <option value="client">Client (Read-only portal views)</option>

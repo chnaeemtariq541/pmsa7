@@ -310,45 +310,6 @@ export default function AuthPage() {
               </button>
             )}
           </div>
-
-          {/* Sandbox Personas Panel - highly interactive! */}
-          {view === 'login' && (
-            <div className="mt-6 pt-5 border-t border-slate-800/60 space-y-3">
-              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block text-center">
-                ⚡ Developer Sandbox Quick Logins
-              </span>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => handleQuickSignIn('project_manager')}
-                  className="p-2 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-xl text-left transition-all duration-150 group"
-                >
-                  <span className="font-bold text-[10px] text-slate-200 block truncate group-hover:text-primary">Alice (PM)</span>
-                  <span className="text-[8px] text-slate-500">Project Lead</span>
-                </button>
-                <button
-                  onClick={() => handleQuickSignIn('team_member')}
-                  className="p-2 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-xl text-left transition-all duration-150 group"
-                >
-                  <span className="font-bold text-[10px] text-slate-200 block truncate group-hover:text-primary">Bob (Dev)</span>
-                  <span className="text-[8px] text-slate-500">Frontend Team</span>
-                </button>
-                <button
-                  onClick={() => handleQuickSignIn('org_admin')}
-                  className="p-2 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-xl text-left transition-all duration-150 group"
-                >
-                  <span className="font-bold text-[10px] text-slate-200 block truncate group-hover:text-primary">John (Admin)</span>
-                  <span className="text-[8px] text-slate-500">VP Engineering</span>
-                </button>
-                <button
-                  onClick={() => handleQuickSignIn('client')}
-                  className="p-2 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-xl text-left transition-all duration-150 group"
-                >
-                  <span className="font-bold text-[10px] text-slate-200 block truncate group-hover:text-primary">David (Client)</span>
-                  <span className="text-[8px] text-slate-500">Read-Only Partner</span>
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

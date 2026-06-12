@@ -28,7 +28,7 @@ export default function ProjectsPage() {
   const [error, setError] = useState<string | null>(null);
 
   const isClient = role === 'client';
-  const canManage = role === 'super_admin' || role === 'org_admin' || role === 'project_manager';
+  const canManage = role === 'super_admin' || role === 'project_manager';
 
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();

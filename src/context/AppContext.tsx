@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { UserProfile, Organization, Project, Notification, UserRole } from '@/types';
 import { db, dbMode } from '@/services/db';
+import { supabase, isSupabaseConfigured } from '@/services/db/client';
 
 interface TimerState {
   taskId: string | null;
@@ -34,14 +35,17 @@ interface AppContextProps {
   reloadProjects: () => Promise<void>;
   isDbMock: boolean;
   allProfiles: UserProfile[];
+  originalRole: UserRole;
 }
 
 const AppContext = createContext<AppContextProps | undefined>(undefined);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [actualUser, setActualUser] = useState<UserProfile | null>(null);
   const [allProfiles, setAllProfiles] = useState<UserProfile[]>([]);
   const [role, setRole] = useState<UserRole>('project_manager'); // Default active role for demo
+  const [originalRole, setOriginalRole] = useState<UserRole>('project_manager');
   const [org, setOrg] = useState<Organization | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [activeProject, setActiveProjectState] = useState<Project | null>(null);
@@ -89,9 +93,22 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         const profiles = await db.getProfiles();
         setAllProfiles(profiles);
 
-        // For demo/mock fallback, we default to the Alice Johnson profile (Project Manager)
-        const demoUser = profiles.find(p => p.id === 'usr-project-manager') || profiles[0] || null;
-        setUser(demoUser);
+        // In Supabase mode, find the actual authenticated user
+        let currentUserProfile = null;
+        if (isSupabaseConfigured) {
+          const { data: { user: authUser } } = await supabase!.auth.getUser();
+          if (authUser) {
+            currentUserProfile = profiles.find(p => p.id === authUser.id) || null;
+          }
+        }
+
+        // Fallback for mock db mode or unauthenticated testing
+        if (!currentUserProfile) {
+          currentUserProfile = profiles.find(p => p.id === 'usr-project-manager') || profiles[0] || null;
+        }
+
+        setUser(currentUserProfile);
+        setActualUser(currentUserProfile);
 
         // Fetch organizations
         const orgs = await db.getOrganizations();
@@ -101,9 +118,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         if (activeOrg) {
           // Fetch members and check default role override
           const members = await db.getOrgMembers(activeOrg.id);
-          const currentMember = members.find(m => m.user_id === (demoUser?.id || ''));
+          const currentMember = members.find(m => m.user_id === (currentUserProfile?.id || ''));
           if (currentMember) {
             setRole(currentMember.role);
+            setOriginalRole(currentMember.role);
           }
 
           // Fetch projects
@@ -115,8 +133,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         }
 
         // Fetch Notifications
-        if (demoUser) {
-          const userNotifs = await db.getNotifications(demoUser.id);
+        if (currentUserProfile) {
+          const userNotifs = await db.getNotifications(currentUserProfile.id);
           setNotifications(userNotifs);
         }
       } catch (err) {
@@ -178,6 +196,13 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   // Switch role dynamically (Dev Switcher tool)
   const switchRole = (newRole: UserRole) => {
     setRole(newRole);
+    
+    // If switching back to original role, restore actual logged-in user
+    if (newRole === originalRole && actualUser) {
+      setUser(actualUser);
+      return;
+    }
+
     // Dynamically adjust current user mock state to match the role profile for demo clarity
     const roleToUserId: Record<UserRole, string> = {
       super_admin: 'usr-super-admin',
@@ -302,7 +327,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       switchRole,
       reloadProjects,
       isDbMock: dbMode === 'mock',
-      allProfiles
+      allProfiles,
+      originalRole
     }}>
       {children}
     </AppContext.Provider>
