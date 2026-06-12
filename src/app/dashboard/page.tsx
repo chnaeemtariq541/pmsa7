@@ -7,9 +7,10 @@ import { db } from '@/services/db';
 import { Project, Task, TaskActivity, UserProfile } from '@/types';
 import { 
   Folder, CheckCircle2, Clock, Users, ArrowUpRight, Plus,
-  TrendingUp, Activity, ClipboardList, CheckSquare
+  TrendingUp, Activity, ClipboardList, CheckSquare, UserPlus
 } from 'lucide-react';
 import Link from 'next/link';
+import { AddMemberModal } from '@/components/add-member-modal';
 
 export default function DashboardPage() {
   const { org, projects, allProfiles, role } = useApp();
@@ -18,6 +19,7 @@ export default function DashboardPage() {
   const [doneTasks, setDoneTasks] = useState(0);
   const [overdueTasks, setOverdueTasks] = useState(0);
   const [activeTasks, setActiveTasks] = useState(0);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   
   const [recentActivities, setRecentActivities] = useState<(TaskActivity & { user: UserProfile, taskTitle: string, projectId: string, projectCode: string })[]>([]);
   const [loading, setLoading] = useState(true);
@@ -99,14 +101,24 @@ export default function DashboardPage() {
             </p>
           </div>
           
-          {/* Quick actions for managers */}
-          {(role === 'super_admin' || role === 'project_manager') && (
-            <Link 
-              href="/projects" 
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold shadow-sm transition-all duration-200"
-            >
-              <Plus className="w-4 h-4" /> Create Project
-            </Link>
+          {/* Quick actions */}
+          {role !== 'client' && (
+            <div className="flex items-center gap-3">
+              {(role === 'super_admin' || role === 'project_manager') && (
+                <Link 
+                  href="/projects" 
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold shadow-sm transition-all duration-200 cursor-pointer"
+                >
+                  <Plus className="w-4 h-4" /> Create Project
+                </Link>
+              )}
+              <button
+                onClick={() => setIsAddModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-card border border-border hover:bg-muted text-foreground text-xs font-semibold shadow-sm transition-all duration-200 cursor-pointer"
+              >
+                <UserPlus className="w-4 h-4 text-muted-foreground" /> Add Member
+              </button>
+            </div>
           )}
         </div>
 
@@ -350,6 +362,11 @@ export default function DashboardPage() {
         </div>
 
       </div>
+
+      <AddMemberModal 
+        isOpen={isAddModalOpen} 
+        onClose={() => setIsAddModalOpen(false)} 
+      />
     </AppShell>
   );
 }

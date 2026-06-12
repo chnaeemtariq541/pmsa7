@@ -33,6 +33,7 @@ interface AppContextProps {
   toggleTheme: () => void;
   switchRole: (role: UserRole) => void;
   reloadProjects: () => Promise<void>;
+  reloadProfiles: () => Promise<void>;
   isDbMock: boolean;
   allProfiles: UserProfile[];
   originalRole: UserRole;
@@ -188,6 +189,16 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Reload Profiles
+  const reloadProfiles = async () => {
+    try {
+      const profiles = await db.getProfiles();
+      setAllProfiles(profiles);
+    } catch (err) {
+      console.error('Failed to reload profiles:', err);
+    }
+  };
+
   // Set active project override
   const setActiveProject = (proj: Project | null) => {
     setActiveProjectState(proj);
@@ -326,6 +337,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       toggleTheme,
       switchRole,
       reloadProjects,
+      reloadProfiles,
       isDbMock: dbMode === 'mock',
       allProfiles,
       originalRole

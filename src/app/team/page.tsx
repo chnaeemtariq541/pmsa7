@@ -5,7 +5,8 @@ import { AppShell } from '@/components/app-shell';
 import { useApp } from '@/context/AppContext';
 import { db } from '@/services/db';
 import { UserProfile, Task } from '@/types';
-import { Users, Search, Mail, Phone, Briefcase, Award, ShieldCheck } from 'lucide-react';
+import { Users, Search, Mail, Phone, Briefcase, Award, ShieldCheck, UserPlus } from 'lucide-react';
+import { AddMemberModal } from '@/components/add-member-modal';
 
 export default function TeamPage() {
   const { allProfiles, projects, role } = useApp();
@@ -13,6 +14,7 @@ export default function TeamPage() {
   const [search, setSearch] = useState('');
   const [workloads, setWorkloads] = useState<Record<string, { tasksCount: number; estHours: number }>>({});
   const [loading, setLoading] = useState(true);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useEffect(() => {
     const calculateWorkloads = async () => {
@@ -70,16 +72,29 @@ export default function TeamPage() {
             </p>
           </div>
 
-          {/* Search bar */}
-          <div className="relative w-full md:w-64">
-            <Search className="absolute left-3.5 top-2.5 w-4 h-4 text-muted-foreground" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search members by skill, name..."
-              className="w-full bg-card border border-border focus:border-primary rounded-xl text-xs pl-10 pr-4 py-2 focus:outline-none"
-            />
+          {/* Search & Actions */}
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            {/* Search bar */}
+            <div className="relative w-full md:w-64">
+              <Search className="absolute left-3.5 top-2.5 w-4 h-4 text-muted-foreground" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search members by skill, name..."
+                className="w-full bg-card border border-border focus:border-primary rounded-xl text-xs pl-10 pr-4 py-2 focus:outline-none"
+              />
+            </div>
+
+            {/* Add Member button (hidden for client) */}
+            {role !== 'client' && (
+              <button
+                onClick={() => setIsAddModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold shadow-sm transition-all duration-200 shrink-0 cursor-pointer"
+              >
+                <UserPlus className="w-4 h-4" /> <span>Add Member</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -168,6 +183,11 @@ export default function TeamPage() {
         )}
 
       </div>
+
+      <AddMemberModal 
+        isOpen={isAddModalOpen} 
+        onClose={() => setIsAddModalOpen(false)} 
+      />
     </AppShell>
   );
 }
