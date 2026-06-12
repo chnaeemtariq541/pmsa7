@@ -115,18 +115,42 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
         // Fetch organizations
         const orgs = await db.getOrganizations();
-        const activeOrg = orgs[0] || null;
+        let activeOrg = null;
+        let activeRole: UserRole = 'project_manager';
+
+        if (currentUserProfile) {
+          for (const o of orgs) {
+            try {
+              const members = await db.getOrgMembers(o.id);
+              const currentMember = members.find(m => m.user_id === currentUserProfile.id);
+              if (currentMember) {
+                activeOrg = o;
+                activeRole = currentMember.role;
+                break;
+              }
+            } catch (err) {
+              console.error('Error checking membership for org:', o.id, err);
+            }
+          }
+        }
+
+        if (!activeOrg && orgs.length > 0) {
+          activeOrg = orgs[0];
+          // Try to check role for fallback org
+          try {
+            const members = await db.getOrgMembers(activeOrg.id);
+            const currentMember = members.find(m => m.user_id === (currentUserProfile?.id || ''));
+            if (currentMember) {
+              activeRole = currentMember.role;
+            }
+          } catch (e) {}
+        }
+
         setOrg(activeOrg);
+        setRole(activeRole);
+        setOriginalRole(activeRole);
 
         if (activeOrg) {
-          // Fetch members and check default role override
-          const members = await db.getOrgMembers(activeOrg.id);
-          const currentMember = members.find(m => m.user_id === (currentUserProfile?.id || ''));
-          if (currentMember) {
-            setRole(currentMember.role);
-            setOriginalRole(currentMember.role);
-          }
-
           // Fetch projects
           const orgProjects = await db.getProjects(activeOrg.id);
           setAllProjects(orgProjects);
