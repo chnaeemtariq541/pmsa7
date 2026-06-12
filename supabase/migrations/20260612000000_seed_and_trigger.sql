@@ -130,78 +130,79 @@ ON CONFLICT (project_id, client_id) DO NOTHING;
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 DECLARE
-  assigned_role org_role;
+  assigned_role public.org_role;
   org_id UUID := '00000000-0000-0000-0000-000000000001';
 BEGIN
-  -- Defensive Clean: Delete any existing profile/membership with the same email or ID
-  -- to prevent unique key / duplicate key violations from orphaned seed records
-  DELETE FROM public.organization_members WHERE user_id IN (SELECT id FROM public.profiles WHERE email = new.email);
-  DELETE FROM public.profiles WHERE email = new.email;
-  DELETE FROM public.profiles WHERE id = new.id;
-
-  -- Ensure default organization exists (Self-Healing)
-  IF NOT EXISTS (SELECT 1 FROM public.organizations WHERE id = org_id) THEN
-    INSERT INTO public.organizations (id, name, logo_url, timezone, currency)
-    VALUES (
-      org_id,
-      'Sheikho & Tolvi LLC',
-      'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=128&h=128&fit=crop&auto=format',
-      'America/New_York',
-      'USD'
-    );
-  END IF;
-
-  -- Ensure projects exist (Self-Healing)
-  IF NOT EXISTS (SELECT 1 FROM public.projects WHERE id = '00000000-0000-0000-0000-000000000002') THEN
-    INSERT INTO public.projects (id, organization_id, name, code, description, priority, status)
-    VALUES ('00000000-0000-0000-0000-000000000002', org_id, 'Colgate Pakistan Website', 'CPW', 'Design and develop the new high-converting marketing website for Colgate Pakistan.', 'critical', 'active') ON CONFLICT DO NOTHING;
-  END IF;
-
-  IF NOT EXISTS (SELECT 1 FROM public.projects WHERE id = '00000000-0000-0000-0000-000000000003') THEN
-    INSERT INTO public.projects (id, organization_id, name, code, description, priority, status)
-    VALUES ('00000000-0000-0000-0000-000000000003', org_id, 'Packages Mall Mobile App', 'PMA', 'Develop the new iOS and Android packages mall companion application.', 'high', 'planning') ON CONFLICT DO NOTHING;
-  END IF;
-
-  IF NOT EXISTS (SELECT 1 FROM public.projects WHERE id = '00000000-0000-0000-0000-000000000004') THEN
-    INSERT INTO public.projects (id, organization_id, name, code, description, priority, status)
-    VALUES ('00000000-0000-0000-0000-000000000004', org_id, 'Lux Website', 'LW', 'Create a luxurious, high-converting digital storefront website for Lux Pakistan.', 'medium', 'completed') ON CONFLICT DO NOTHING;
-  END IF;
-
-  IF NOT EXISTS (SELECT 1 FROM public.projects WHERE id = '00000000-0000-0000-0000-000000000005') THEN
-    INSERT INTO public.projects (id, organization_id, name, code, description, priority, status)
-    VALUES ('00000000-0000-0000-0000-000000000005', org_id, 'Pak Army Web Portal', 'PAWP', 'Design and implement the high-security portal and intranet directory.', 'critical', 'active') ON CONFLICT DO NOTHING;
-  END IF;
-
-  -- Create user profile inside profiles table
-  INSERT INTO public.profiles (id, name, email, avatar_url, designation)
-  VALUES (
-    new.id,
-    COALESCE(new.raw_user_meta_data->>'name', split_part(new.email, '@', 1)),
-    new.email,
-    new.raw_user_meta_data->>'avatar_url',
-    COALESCE(new.raw_user_meta_data->>'designation', 'Consultant')
-  );
-
-  -- Determine role dynamically based on registration email
-  IF new.email = 'naeemtariq451@gmail.com' THEN
-    assigned_role := 'super_admin';
-  ELSIF new.email IN ('taleem@a7logics.com', 'salman@a7logics.com', 'javaid@a7logics.com') THEN
-    assigned_role := 'project_manager';
-  ELSIF new.email IN ('zain@a7logics.com', 'bilal@a7logics.com', 'hamza@a7logics.com', 'ali@a7logics.com', 'umar@a7logics.com', 'usman@a7logics.com') THEN
-    assigned_role := 'team_member';
-  ELSIF new.email IN ('tariq@clientcorp.com', 'faisal@clientcorp.com', 'kamran@clientcorp.com', 'rizwan@clientcorp.com') THEN
-    assigned_role := 'client';
-  ELSE
-    assigned_role := 'team_member'; -- fallback default role
-  END IF;
-
-  -- Map member to the organization
-  INSERT INTO public.organization_members (organization_id, user_id, role)
-  VALUES (org_id, new.id, assigned_role)
-  ON CONFLICT (organization_id, user_id) DO UPDATE SET role = assigned_role;
-
-  -- Auto-add project managers and team members to their respective projects (wrapped in EXCEPTION to ensure it never blocks sign-up)
+  -- Wrap the entire execution block in an exception handler so signup can NEVER fail
   BEGIN
+    -- Defensive Clean: Delete any existing profile/membership with the same email or ID
+    -- to prevent unique key / duplicate key violations from orphaned seed records
+    DELETE FROM public.organization_members WHERE user_id IN (SELECT id FROM public.profiles WHERE email = new.email);
+    DELETE FROM public.profiles WHERE email = new.email;
+    DELETE FROM public.profiles WHERE id = new.id;
+
+    -- Ensure default organization exists (Self-Healing)
+    IF NOT EXISTS (SELECT 1 FROM public.organizations WHERE id = org_id) THEN
+      INSERT INTO public.organizations (id, name, logo_url, timezone, currency)
+      VALUES (
+        org_id,
+        'Sheikho & Tolvi LLC',
+        'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=128&h=128&fit=crop&auto=format',
+        'America/New_York',
+        'USD'
+      );
+    END IF;
+
+    -- Ensure projects exist (Self-Healing)
+    IF NOT EXISTS (SELECT 1 FROM public.projects WHERE id = '00000000-0000-0000-0000-000000000002') THEN
+      INSERT INTO public.projects (id, organization_id, name, code, description, priority, status)
+      VALUES ('00000000-0000-0000-0000-000000000002', org_id, 'Colgate Pakistan Website', 'CPW', 'Design and develop the new high-converting marketing website for Colgate Pakistan.', 'critical', 'active') ON CONFLICT DO NOTHING;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM public.projects WHERE id = '00000000-0000-0000-0000-000000000003') THEN
+      INSERT INTO public.projects (id, organization_id, name, code, description, priority, status)
+      VALUES ('00000000-0000-0000-0000-000000000003', org_id, 'Packages Mall Mobile App', 'PMA', 'Develop the new iOS and Android packages mall companion application.', 'high', 'planning') ON CONFLICT DO NOTHING;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM public.projects WHERE id = '00000000-0000-0000-0000-000000000004') THEN
+      INSERT INTO public.projects (id, organization_id, name, code, description, priority, status)
+      VALUES ('00000000-0000-0000-0000-000000000004', org_id, 'Lux Website', 'LW', 'Create a luxurious, high-converting digital storefront website for Lux Pakistan.', 'medium', 'completed') ON CONFLICT DO NOTHING;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM public.projects WHERE id = '00000000-0000-0000-0000-000000000005') THEN
+      INSERT INTO public.projects (id, organization_id, name, code, description, priority, status)
+      VALUES ('00000000-0000-0000-0000-000000000005', org_id, 'Pak Army Web Portal', 'PAWP', 'Design and implement the high-security portal and intranet directory.', 'critical', 'active') ON CONFLICT DO NOTHING;
+    END IF;
+
+    -- Create user profile inside profiles table
+    INSERT INTO public.profiles (id, name, email, avatar_url, designation)
+    VALUES (
+      new.id,
+      COALESCE(new.raw_user_meta_data->>'name', split_part(new.email, '@', 1)),
+      new.email,
+      new.raw_user_meta_data->>'avatar_url',
+      COALESCE(new.raw_user_meta_data->>'designation', 'Consultant')
+    );
+
+    -- Determine role dynamically based on registration email
+    IF new.email = 'naeemtariq451@gmail.com' THEN
+      assigned_role := 'super_admin';
+    ELSIF new.email IN ('taleem@a7logics.com', 'salman@a7logics.com', 'javaid@a7logics.com') THEN
+      assigned_role := 'project_manager';
+    ELSIF new.email IN ('zain@a7logics.com', 'bilal@a7logics.com', 'hamza@a7logics.com', 'ali@a7logics.com', 'umar@a7logics.com', 'usman@a7logics.com') THEN
+      assigned_role := 'team_member';
+    ELSIF new.email IN ('tariq@clientcorp.com', 'faisal@clientcorp.com', 'kamran@clientcorp.com', 'rizwan@clientcorp.com') THEN
+      assigned_role := 'client';
+    ELSE
+      assigned_role := 'team_member'; -- fallback default role
+    END IF;
+
+    -- Map member to the organization
+    INSERT INTO public.organization_members (organization_id, user_id, role)
+    VALUES (org_id, new.id, assigned_role)
+    ON CONFLICT (organization_id, user_id) DO UPDATE SET role = assigned_role;
+
+    -- Auto-add project managers and team members to their respective projects
     IF assigned_role = 'project_manager' THEN
       -- Taleem Hussain handles Colgate Website (CPW) and Pak Army Web Portal (PAWP)
       IF new.email = 'taleem@a7logics.com' THEN
@@ -263,7 +264,8 @@ BEGIN
     END IF;
   EXCEPTION
     WHEN OTHERS THEN
-      -- Silently catch and ignore any error during project membership link
+      -- Silently catch and ignore any error inside the trigger function so that
+      -- user registration in auth.users is never blocked.
       NULL;
   END;
 
@@ -271,7 +273,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Re-bind the trigger to ensure the new function is active
+-- Re-bind trigger
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
