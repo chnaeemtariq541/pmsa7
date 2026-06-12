@@ -41,47 +41,59 @@ const createInitialMockData = (): MockDatabaseSchema => {
   const users: UserProfile[] = [
     {
       id: 'usr-super-admin',
-      name: 'Jane Doe',
-      email: 'jane.doe@acme.com',
+      name: 'Naeem Tariq',
+      email: 'naeemtariq451@gmail.com',
       designation: 'CEO & Founder',
-      avatar_url: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&auto=format',
-      phone: '+1 (555) 019-2834',
-      skills: ['Strategic Planning', 'Public Speaking', 'Budgeting'],
+      avatar_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&auto=format',
+      phone: '+92 (300) 123-4567',
+      skills: ['Strategic Leadership', 'Corporate Governance', 'Product Strategy'],
       department: 'Executive',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     },
     {
       id: 'usr-org-admin',
-      name: 'John Smith',
-      email: 'john.smith@acme.com',
-      designation: 'VP of Engineering',
-      avatar_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&auto=format',
-      phone: '+1 (555) 019-5829',
-      skills: ['Engineering Management', 'Kubernetes', 'SaaS Architecture'],
-      department: 'Engineering',
+      name: 'Taleem Hussain',
+      email: 'taleem@a7logics.com',
+      designation: 'Senior Project Manager',
+      avatar_url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&auto=format',
+      phone: '+92 (312) 456-7890',
+      skills: ['Agile Leadership', 'Portfolio Delivery', 'SaaS Architecture'],
+      department: 'Project Management',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     },
     {
       id: 'usr-project-manager',
-      name: 'Alice Johnson',
-      email: 'alice.johnson@acme.com',
-      designation: 'Lead Project Manager',
-      avatar_url: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&auto=format',
-      phone: '+1 (555) 019-3382',
-      skills: ['Agile Methodology', 'Scrum', 'Risk Management'],
-      department: 'Product Management',
+      name: 'Hafiz Salman',
+      email: 'salman@a7logics.com',
+      designation: 'Technical Project Manager',
+      avatar_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&auto=format',
+      phone: '+92 (321) 765-4321',
+      skills: ['Scrum Framework', 'API Integration', 'Risk Management'],
+      department: 'Project Management',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    },
+    {
+      id: 'usr-pm-javaid',
+      name: 'Javaid Khadim',
+      email: 'javaid@a7logics.com',
+      designation: 'Agile Delivery Lead',
+      avatar_url: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&h=150&fit=crop&auto=format',
+      phone: '+92 (333) 987-6543',
+      skills: ['Sprint Planning', 'Client Relations', 'Process Optimization'],
+      department: 'Project Management',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     },
     {
       id: 'usr-team-member-1',
-      name: 'Bob Vance',
-      email: 'bob.vance@acme.com',
+      name: 'Zain Ul Abidin',
+      email: 'zain@a7logics.com',
       designation: 'Senior Frontend Engineer',
-      avatar_url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&auto=format',
-      phone: '+1 (555) 019-8839',
+      avatar_url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&h=150&fit=crop&auto=format',
+      phone: '+92 (315) 555-1234',
       skills: ['Next.js', 'React', 'Tailwind CSS', 'TypeScript'],
       department: 'Frontend Engineering',
       created_at: new Date().toISOString(),
@@ -89,25 +101,109 @@ const createInitialMockData = (): MockDatabaseSchema => {
     },
     {
       id: 'usr-team-member-2',
-      name: 'Charlie Brown',
-      email: 'charlie.brown@acme.com',
+      name: 'Muhammad Bilal',
+      email: 'bilal@a7logics.com',
       designation: 'Full Stack Engineer',
-      avatar_url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop&auto=format',
-      phone: '+1 (555) 019-2283',
-      skills: ['Node.js', 'PostgreSQL', 'Python', 'React'],
+      avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&auto=format',
+      phone: '+92 (345) 999-8888',
+      skills: ['Node.js', 'PostgreSQL', 'Express', 'GraphQL'],
+      department: 'Engineering',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    },
+    {
+      id: 'usr-tm-hamza',
+      name: 'Hamza Abbasi',
+      email: 'hamza@a7logics.com',
+      designation: 'DevOps Specialist',
+      avatar_url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=150&h=150&fit=crop&auto=format',
+      phone: '+92 (322) 111-2222',
+      skills: ['Docker', 'AWS', 'Kubernetes', 'CI/CD Pipelines'],
+      department: 'DevOps & Infrastructure',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    },
+    {
+      id: 'usr-tm-ali',
+      name: 'Ali Raza',
+      email: 'ali@a7logics.com',
+      designation: 'UI/UX Designer',
+      avatar_url: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&h=150&fit=crop&auto=format',
+      phone: '+92 (336) 444-5555',
+      skills: ['Figma', 'Prototyping', 'User Research', 'Design Systems'],
+      department: 'Product Design',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    },
+    {
+      id: 'usr-tm-umar',
+      name: 'Umar Farooq',
+      email: 'umar@a7logics.com',
+      designation: 'QA Engineer',
+      avatar_url: 'https://images.unsplash.com/photo-1513956589380-bad6acb9b9d4?w=150&h=150&fit=crop&auto=format',
+      phone: '+92 (300) 888-7777',
+      skills: ['Jest', 'Cypress', 'Playwright', 'API Automation'],
+      department: 'Quality Assurance',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    },
+    {
+      id: 'usr-tm-usman',
+      name: 'Usman Ghani',
+      email: 'usman@a7logics.com',
+      designation: 'Backend Engineer',
+      avatar_url: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&h=150&fit=crop&auto=format',
+      phone: '+92 (310) 666-5555',
+      skills: ['Python', 'FastAPI', 'Redis', 'Microservices'],
       department: 'Backend Engineering',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     },
     {
       id: 'usr-client',
-      name: 'David Miller',
-      email: 'david.miller@clientcorp.com',
-      designation: 'Product Owner (Client)',
-      avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&auto=format',
-      phone: '+1 (555) 019-1192',
-      skills: ['Business Requirements', 'UAT'],
-      department: 'External Partner',
+      name: 'Tariq Mahmood',
+      email: 'tariq@clientcorp.com',
+      designation: 'Product Owner (Colgate)',
+      avatar_url: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&auto=format',
+      phone: '+92 (301) 444-2222',
+      skills: ['Business Requirements', 'UAT Acceptance'],
+      department: 'External Colgate Group',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    },
+    {
+      id: 'usr-client-faisal',
+      name: 'Faisal Qureshi',
+      email: 'faisal@clientcorp.com',
+      designation: 'IT Director (Packages Mall)',
+      avatar_url: 'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?w=150&h=150&fit=crop&auto=format',
+      phone: '+92 (302) 111-3333',
+      skills: ['Retail Digitalization', 'Mobile Marketing'],
+      department: 'External Packages Group',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    },
+    {
+      id: 'usr-client-kamran',
+      name: 'Kamran Akmal',
+      email: 'kamran@clientcorp.com',
+      designation: 'Marketing VP (Lux)',
+      avatar_url: 'https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=150&h=150&fit=crop&auto=format',
+      phone: '+92 (303) 999-6666',
+      skills: ['Brand Strategy', 'Product Placement'],
+      department: 'External Unilever Pakistan',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    },
+    {
+      id: 'usr-client-rizwan',
+      name: 'Rizwan Ahmed',
+      email: 'rizwan@clientcorp.com',
+      designation: 'Program Manager (Army Portal)',
+      avatar_url: 'https://images.unsplash.com/photo-1489980508314-941910ded1f4?w=150&h=150&fit=crop&auto=format',
+      phone: '+92 (304) 777-1111',
+      skills: ['Government Portals', 'Network Security'],
+      department: 'External IT Wing',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     }
@@ -115,20 +211,28 @@ const createInitialMockData = (): MockDatabaseSchema => {
 
   const orgMembers: OrganizationMember[] = [
     { id: 'om-1', organization_id: orgId, user_id: 'usr-super-admin', role: 'super_admin', created_at: new Date().toISOString() },
-    { id: 'om-2', organization_id: orgId, user_id: 'usr-org-admin', role: 'org_admin', created_at: new Date().toISOString() },
+    { id: 'om-2', organization_id: orgId, user_id: 'usr-org-admin', role: 'project_manager', created_at: new Date().toISOString() },
     { id: 'om-3', organization_id: orgId, user_id: 'usr-project-manager', role: 'project_manager', created_at: new Date().toISOString() },
+    { id: 'om-3b', organization_id: orgId, user_id: 'usr-pm-javaid', role: 'project_manager', created_at: new Date().toISOString() },
     { id: 'om-4', organization_id: orgId, user_id: 'usr-team-member-1', role: 'team_member', created_at: new Date().toISOString() },
     { id: 'om-5', organization_id: orgId, user_id: 'usr-team-member-2', role: 'team_member', created_at: new Date().toISOString() },
-    { id: 'om-6', organization_id: orgId, user_id: 'usr-client', role: 'client', created_at: new Date().toISOString() }
+    { id: 'om-7', organization_id: orgId, user_id: 'usr-tm-hamza', role: 'team_member', created_at: new Date().toISOString() },
+    { id: 'om-8', organization_id: orgId, user_id: 'usr-tm-ali', role: 'team_member', created_at: new Date().toISOString() },
+    { id: 'om-9', organization_id: orgId, user_id: 'usr-tm-umar', role: 'team_member', created_at: new Date().toISOString() },
+    { id: 'om-10', organization_id: orgId, user_id: 'usr-tm-usman', role: 'team_member', created_at: new Date().toISOString() },
+    { id: 'om-11', organization_id: orgId, user_id: 'usr-client', role: 'client', created_at: new Date().toISOString() },
+    { id: 'om-12', organization_id: orgId, user_id: 'usr-client-faisal', role: 'client', created_at: new Date().toISOString() },
+    { id: 'om-13', organization_id: orgId, user_id: 'usr-client-kamran', role: 'client', created_at: new Date().toISOString() },
+    { id: 'om-14', organization_id: orgId, user_id: 'usr-client-rizwan', role: 'client', created_at: new Date().toISOString() }
   ];
 
   const projects: Project[] = [
     {
       id: 'proj-pmsa7',
       organization_id: orgId,
-      name: 'PMSA7 Project Management System',
-      code: 'PMS',
-      description: 'Design and develop the next-generation enterprise-ready agile project management software for digital organizations.',
+      name: 'Colgate Pakistan Website',
+      code: 'CPW',
+      description: 'Design and develop the new high-converting marketing website for Colgate Pakistan, complete with product catalogs and consumer resources.',
       start_date: '2026-05-01T00:00:00Z',
       end_date: '2026-08-31T00:00:00Z',
       priority: 'critical',
@@ -140,9 +244,9 @@ const createInitialMockData = (): MockDatabaseSchema => {
     {
       id: 'proj-mobile',
       organization_id: orgId,
-      name: 'Mobile App Redesign',
-      code: 'MAR',
-      description: 'Revamping the core iOS and Android customer applications to modern UI standards with enhanced speed and offline sync.',
+      name: 'Packages Mall Mobile App',
+      code: 'PMA',
+      description: 'Develop the new iOS and Android packages mall companion application featuring shopping directories, loyalty tracking, and indoor maps.',
       start_date: '2026-06-15T00:00:00Z',
       end_date: '2026-10-15T00:00:00Z',
       priority: 'high',
@@ -154,28 +258,62 @@ const createInitialMockData = (): MockDatabaseSchema => {
     {
       id: 'proj-landing',
       organization_id: orgId,
-      name: 'Acme Corp Landing Page',
-      code: 'CLP',
-      description: 'Brand new high-converting marketing landing page with interactive product previews and seamless lead forms.',
+      name: 'Lux Website',
+      code: 'LW',
+      description: 'Create a luxurious, high-converting digital storefront website for Lux Pakistan campaign promotion and ambassador listings.',
       start_date: '2026-04-10T00:00:00Z',
       end_date: '2026-05-20T00:00:00Z',
       priority: 'medium',
       status: 'completed',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      created_by: 'usr-project-manager'
+      created_by: 'usr-pm-javaid'
+    },
+    {
+      id: 'proj-pakarmy',
+      organization_id: orgId,
+      name: 'Pak Army Web Portal',
+      code: 'PAWP',
+      description: 'Design and implement the high-security portal and intranet directory for public recruitment and news broadcasts.',
+      start_date: '2026-05-15T00:00:00Z',
+      end_date: '2026-09-30T00:00:00Z',
+      priority: 'critical',
+      status: 'active',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      created_by: 'usr-org-admin'
     }
   ];
 
   const projectMembers: ProjectMember[] = [
-    { id: 'pm-1', project_id: 'proj-pmsa7', user_id: 'usr-project-manager', created_at: new Date().toISOString() },
-    { id: 'pm-2', project_id: 'proj-pmsa7', user_id: 'usr-team-member-1', created_at: new Date().toISOString() },
-    { id: 'pm-3', project_id: 'proj-pmsa7', user_id: 'usr-team-member-2', created_at: new Date().toISOString() },
-    { id: 'pm-4', project_id: 'proj-pmsa7', user_id: 'usr-client', created_at: new Date().toISOString() },
-    { id: 'pm-5', project_id: 'proj-mobile', user_id: 'usr-project-manager', created_at: new Date().toISOString() },
-    { id: 'pm-6', project_id: 'proj-mobile', user_id: 'usr-team-member-2', created_at: new Date().toISOString() },
-    { id: 'pm-7', project_id: 'proj-landing', user_id: 'usr-project-manager', created_at: new Date().toISOString() },
-    { id: 'pm-8', project_id: 'proj-landing', user_id: 'usr-team-member-1', created_at: new Date().toISOString() }
+    // Colgate Pakistan Website (CPW)
+    { id: 'pm-1', project_id: 'proj-pmsa7', user_id: 'usr-org-admin', created_at: new Date().toISOString() },
+    { id: 'pm-2', project_id: 'proj-pmsa7', user_id: 'usr-project-manager', created_at: new Date().toISOString() },
+    { id: 'pm-3', project_id: 'proj-pmsa7', user_id: 'usr-team-member-1', created_at: new Date().toISOString() },
+    { id: 'pm-4', project_id: 'proj-pmsa7', user_id: 'usr-team-member-2', created_at: new Date().toISOString() },
+    { id: 'pm-5', project_id: 'proj-pmsa7', user_id: 'usr-tm-ali', created_at: new Date().toISOString() },
+    { id: 'pm-6', project_id: 'proj-pmsa7', user_id: 'usr-client', created_at: new Date().toISOString() },
+    
+    // Packages Mall Mobile App (PMA)
+    { id: 'pm-7', project_id: 'proj-mobile', user_id: 'usr-project-manager', created_at: new Date().toISOString() },
+    { id: 'pm-8', project_id: 'proj-mobile', user_id: 'usr-team-member-2', created_at: new Date().toISOString() },
+    { id: 'pm-9', project_id: 'proj-mobile', user_id: 'usr-tm-umar', created_at: new Date().toISOString() },
+    { id: 'pm-10', project_id: 'proj-mobile', user_id: 'usr-tm-hamza', created_at: new Date().toISOString() },
+    { id: 'pm-11', project_id: 'proj-mobile', user_id: 'usr-client-faisal', created_at: new Date().toISOString() },
+
+    // Lux Website (LW)
+    { id: 'pm-12', project_id: 'proj-landing', user_id: 'usr-pm-javaid', created_at: new Date().toISOString() },
+    { id: 'pm-13', project_id: 'proj-landing', user_id: 'usr-team-member-1', created_at: new Date().toISOString() },
+    { id: 'pm-14', project_id: 'proj-landing', user_id: 'usr-tm-usman', created_at: new Date().toISOString() },
+    { id: 'pm-15', project_id: 'proj-landing', user_id: 'usr-tm-ali', created_at: new Date().toISOString() },
+    { id: 'pm-16', project_id: 'proj-landing', user_id: 'usr-client-kamran', created_at: new Date().toISOString() },
+
+    // Pak Army Web Portal (PAWP)
+    { id: 'pm-17', project_id: 'proj-pakarmy', user_id: 'usr-org-admin', created_at: new Date().toISOString() },
+    { id: 'pm-18', project_id: 'proj-pakarmy', user_id: 'usr-team-member-2', created_at: new Date().toISOString() },
+    { id: 'pm-19', project_id: 'proj-pakarmy', user_id: 'usr-tm-hamza', created_at: new Date().toISOString() },
+    { id: 'pm-20', project_id: 'proj-pakarmy', user_id: 'usr-tm-usman', created_at: new Date().toISOString() },
+    { id: 'pm-21', project_id: 'proj-pakarmy', user_id: 'usr-client-rizwan', created_at: new Date().toISOString() }
   ];
 
   const sprints: Sprint[] = [
@@ -363,7 +501,7 @@ const createInitialMockData = (): MockDatabaseSchema => {
       id: 'c-1',
       task_id: 'task-3',
       author_id: 'usr-project-manager',
-      content: 'Hey @Bob Vance, how is the drag and drop interaction coming? We want to make sure it feels extremely smooth.',
+      content: 'Hey @Zain Ul Abidin, how is the drag and drop interaction coming? We want to make sure it feels extremely smooth.',
       created_at: new Date(Date.now() - 3600000 * 5).toISOString() // 5 hours ago
     },
     {
@@ -460,7 +598,7 @@ const createInitialMockData = (): MockDatabaseSchema => {
       id: 'n-1',
       user_id: 'usr-team-member-1',
       title: 'New Task Assigned',
-      content: 'Alice Johnson assigned you task: "Implement Interactive Kanban Board"',
+      content: 'Hafiz Salman assigned you task: "Implement Interactive Kanban Board"',
       link: '/projects/proj-pmsa7/board',
       is_read: false,
       created_at: new Date(Date.now() - 3600000 * 4).toISOString()
@@ -469,7 +607,7 @@ const createInitialMockData = (): MockDatabaseSchema => {
       id: 'n-2',
       user_id: 'usr-team-member-1',
       title: 'New Comment',
-      content: 'Alice Johnson mentioned you in task "Implement Interactive Kanban Board"',
+      content: 'Hafiz Salman mentioned you in task "Implement Interactive Kanban Board"',
       link: '/projects/proj-pmsa7/board',
       is_read: false,
       created_at: new Date(Date.now() - 3600000 * 3).toISOString()
@@ -480,9 +618,33 @@ const createInitialMockData = (): MockDatabaseSchema => {
     {
       id: 'cl-1',
       organization_id: orgId,
-      name: 'David Miller',
-      email: 'david.miller@clientcorp.com',
-      company: 'Client Corp Ltd',
+      name: 'Tariq Mahmood',
+      email: 'tariq@clientcorp.com',
+      company: 'Colgate Pakistan Group',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 'cl-2',
+      organization_id: orgId,
+      name: 'Faisal Qureshi',
+      email: 'faisal@clientcorp.com',
+      company: 'Packages Group',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 'cl-3',
+      organization_id: orgId,
+      name: 'Kamran Akmal',
+      email: 'kamran@clientcorp.com',
+      company: 'Unilever Pakistan',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 'cl-4',
+      organization_id: orgId,
+      name: 'Rizwan Ahmed',
+      email: 'rizwan@clientcorp.com',
+      company: 'Pak Army IT Division',
       created_at: new Date().toISOString()
     }
   ];
@@ -492,6 +654,21 @@ const createInitialMockData = (): MockDatabaseSchema => {
       id: 'pc-1',
       project_id: 'proj-pmsa7',
       client_id: 'cl-1'
+    },
+    {
+      id: 'pc-2',
+      project_id: 'proj-mobile',
+      client_id: 'cl-2'
+    },
+    {
+      id: 'pc-3',
+      project_id: 'proj-landing',
+      client_id: 'cl-3'
+    },
+    {
+      id: 'pc-4',
+      project_id: 'proj-pakarmy',
+      client_id: 'cl-4'
     }
   ];
 
