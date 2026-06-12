@@ -133,6 +133,12 @@ DECLARE
   assigned_role org_role;
   org_id UUID := '00000000-0000-0000-0000-000000000001';
 BEGIN
+  -- Defensive Clean: Delete any existing profile/membership with the same email or ID
+  -- to prevent unique key / duplicate key violations from orphaned seed records
+  DELETE FROM public.organization_members WHERE user_id IN (SELECT id FROM public.profiles WHERE email = new.email);
+  DELETE FROM public.profiles WHERE email = new.email;
+  DELETE FROM public.profiles WHERE id = new.id;
+
   -- Create user profile inside profiles table
   INSERT INTO public.profiles (id, name, email, avatar_url, designation)
   VALUES (
@@ -159,68 +165,74 @@ BEGIN
   -- Map member to the organization
   INSERT INTO public.organization_members (organization_id, user_id, role)
   VALUES (org_id, new.id, assigned_role)
-  ON CONFLICT (organization_id, user_id) DO NOTHING;
+  ON CONFLICT (organization_id, user_id) DO UPDATE SET role = assigned_role;
 
-  -- Auto-add project managers and team members to their respective projects
-  IF assigned_role = 'project_manager' THEN
-    -- Taleem Hussain handles Colgate Website (CPW) and Pak Army Web Portal (PAWP)
-    IF new.email = 'taleem@a7logics.com' THEN
-      INSERT INTO public.project_members (project_id, user_id) VALUES 
-        ('00000000-0000-0000-0000-000000000002', new.id),
-        ('00000000-0000-0000-0000-000000000005', new.id)
-      ON CONFLICT DO NOTHING;
-    -- Hafiz Salman handles Packages Mall Mobile App (PMA) and Colgate (CPW)
-    ELSIF new.email = 'salman@a7logics.com' THEN
-      INSERT INTO public.project_members (project_id, user_id) VALUES 
-        ('00000000-0000-0000-0000-000000000002', new.id),
-        ('00000000-0000-0000-0000-000000000003', new.id)
-      ON CONFLICT DO NOTHING;
-    -- Javaid Khadim handles Lux Website (LW)
-    ELSIF new.email = 'javaid@a7logics.com' THEN
-      INSERT INTO public.project_members (project_id, user_id) VALUES 
-        ('00000000-0000-0000-0000-000000000004', new.id)
-      ON CONFLICT DO NOTHING;
+  -- Auto-add project managers and team members to their respective projects (wrapped in EXCEPTION to ensure it never blocks sign-up)
+  BEGIN
+    IF assigned_role = 'project_manager' THEN
+      -- Taleem Hussain handles Colgate Website (CPW) and Pak Army Web Portal (PAWP)
+      IF new.email = 'taleem@a7logics.com' THEN
+        INSERT INTO public.project_members (project_id, user_id) VALUES 
+          ('00000000-0000-0000-0000-000000000002', new.id),
+          ('00000000-0000-0000-0000-000000000005', new.id)
+        ON CONFLICT DO NOTHING;
+      -- Hafiz Salman handles Packages Mall Mobile App (PMA) and Colgate (CPW)
+      ELSIF new.email = 'salman@a7logics.com' THEN
+        INSERT INTO public.project_members (project_id, user_id) VALUES 
+          ('00000000-0000-0000-0000-000000000002', new.id),
+          ('00000000-0000-0000-0000-000000000003', new.id)
+        ON CONFLICT DO NOTHING;
+      -- Javaid Khadim handles Lux Website (LW)
+      ELSIF new.email = 'javaid@a7logics.com' THEN
+        INSERT INTO public.project_members (project_id, user_id) VALUES 
+          ('00000000-0000-0000-0000-000000000004', new.id)
+        ON CONFLICT DO NOTHING;
+      END IF;
+    
+    ELSIF assigned_role = 'team_member' THEN
+      -- Zain Ul Abidin handles Colgate (CPW) and Lux Website (LW)
+      IF new.email = 'zain@a7logics.com' THEN
+        INSERT INTO public.project_members (project_id, user_id) VALUES 
+          ('00000000-0000-0000-0000-000000000002', new.id),
+          ('00000000-0000-0000-0000-000000000004', new.id)
+        ON CONFLICT DO NOTHING;
+      -- Muhammad Bilal handles Colgate (CPW), Packages Mall Mobile App (PMA), and Pak Army Portal (PAWP)
+      ELSIF new.email = 'bilal@a7logics.com' THEN
+        INSERT INTO public.project_members (project_id, user_id) VALUES 
+          ('00000000-0000-0000-0000-000000000002', new.id),
+          ('00000000-0000-0000-0000-000000000003', new.id),
+          ('00000000-0000-0000-0000-000000000005', new.id)
+        ON CONFLICT DO NOTHING;
+      -- Hamza Abbasi handles Packages Mall (PMA) and Pak Army Portal (PAWP)
+      ELSIF new.email = 'hamza@a7logics.com' THEN
+        INSERT INTO public.project_members (project_id, user_id) VALUES 
+          ('00000000-0000-0000-0000-000000000003', new.id),
+          ('00000000-0000-0000-0000-000000000005', new.id)
+        ON CONFLICT DO NOTHING;
+      -- Ali Raza handles Colgate (CPW) and Lux Website (LW)
+      ELSIF new.email = 'ali@a7logics.com' THEN
+        INSERT INTO public.project_members (project_id, user_id) VALUES 
+          ('00000000-0000-0000-0000-000000000002', new.id),
+          ('00000000-0000-0000-0000-000000000004', new.id)
+        ON CONFLICT DO NOTHING;
+      -- Umar Farooq handles Packages Mall (PMA)
+      ELSIF new.email = 'umar@a7logics.com' THEN
+        INSERT INTO public.project_members (project_id, user_id) VALUES 
+          ('00000000-0000-0000-0000-000000000003', new.id)
+        ON CONFLICT DO NOTHING;
+      -- Usman Ghani handles Lux Website (LW) and Pak Army Portal (PAWP)
+      ELSIF new.email = 'usman@a7logics.com' THEN
+        INSERT INTO public.project_members (project_id, user_id) VALUES 
+          ('00000000-0000-0000-0000-000000000004', new.id),
+          ('00000000-0000-0000-0000-000000000005', new.id)
+        ON CONFLICT DO NOTHING;
+      END IF;
     END IF;
-  
-  ELSIF assigned_role = 'team_member' THEN
-    -- Zain Ul Abidin handles Colgate (CPW) and Lux Website (LW)
-    IF new.email = 'zain@a7logics.com' THEN
-      INSERT INTO public.project_members (project_id, user_id) VALUES 
-        ('00000000-0000-0000-0000-000000000002', new.id),
-        ('00000000-0000-0000-0000-000000000004', new.id)
-      ON CONFLICT DO NOTHING;
-    -- Muhammad Bilal handles Colgate (CPW), Packages Mall Mobile App (PMA), and Pak Army Portal (PAWP)
-    ELSIF new.email = 'bilal@a7logics.com' THEN
-      INSERT INTO public.project_members (project_id, user_id) VALUES 
-        ('00000000-0000-0000-0000-000000000002', new.id),
-        ('00000000-0000-0000-0000-000000000003', new.id),
-        ('00000000-0000-0000-0000-000000000005', new.id)
-      ON CONFLICT DO NOTHING;
-    -- Hamza Abbasi handles Packages Mall (PMA) and Pak Army Portal (PAWP)
-    ELSIF new.email = 'hamza@a7logics.com' THEN
-      INSERT INTO public.project_members (project_id, user_id) VALUES 
-        ('00000000-0000-0000-0000-000000000003', new.id),
-        ('00000000-0000-0000-0000-000000000005', new.id)
-      ON CONFLICT DO NOTHING;
-    -- Ali Raza handles Colgate (CPW) and Lux Website (LW)
-    ELSIF new.email = 'ali@a7logics.com' THEN
-      INSERT INTO public.project_members (project_id, user_id) VALUES 
-        ('00000000-0000-0000-0000-000000000002', new.id),
-        ('00000000-0000-0000-0000-000000000004', new.id)
-      ON CONFLICT DO NOTHING;
-    -- Umar Farooq handles Packages Mall (PMA)
-    ELSIF new.email = 'umar@a7logics.com' THEN
-      INSERT INTO public.project_members (project_id, user_id) VALUES 
-        ('00000000-0000-0000-0000-000000000003', new.id)
-      ON CONFLICT DO NOTHING;
-    -- Usman Ghani handles Lux Website (LW) and Pak Army Portal (PAWP)
-    ELSIF new.email = 'usman@a7logics.com' THEN
-      INSERT INTO public.project_members (project_id, user_id) VALUES 
-        ('00000000-0000-0000-0000-000000000004', new.id),
-        ('00000000-0000-0000-0000-000000000005', new.id)
-      ON CONFLICT DO NOTHING;
-    END IF;
-  END IF;
+  EXCEPTION
+    WHEN OTHERS THEN
+      -- Silently catch and ignore any error during project membership link
+      NULL;
+  END;
 
   RETURN new;
 END;
