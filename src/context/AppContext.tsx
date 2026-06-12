@@ -34,6 +34,7 @@ interface AppContextProps {
   switchRole: (role: UserRole) => void;
   reloadProjects: () => Promise<void>;
   reloadProfiles: () => Promise<void>;
+  updateUserProfile: (updates: Partial<UserProfile>) => Promise<void>;
   isDbMock: boolean;
   allProfiles: UserProfile[];
   originalRole: UserRole;
@@ -199,6 +200,22 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Update User Profile
+  const updateUserProfile = async (updates: Partial<UserProfile>) => {
+    if (!user) return;
+    try {
+      const updated = await db.updateProfile(user.id, updates);
+      setUser(updated);
+      if (actualUser && actualUser.id === user.id) {
+        setActualUser(updated);
+      }
+      await reloadProfiles();
+    } catch (err) {
+      console.error('Failed to update profile:', err);
+      throw err;
+    }
+  };
+
   // Set active project override
   const setActiveProject = (proj: Project | null) => {
     setActiveProjectState(proj);
@@ -338,6 +355,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       switchRole,
       reloadProjects,
       reloadProfiles,
+      updateUserProfile,
       isDbMock: dbMode === 'mock',
       allProfiles,
       originalRole

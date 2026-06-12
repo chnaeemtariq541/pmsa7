@@ -2,8 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
+import { supabase, isSupabaseConfigured } from '@/services/db/client';
 import { 
   LayoutDashboard, FolderKanban, Users, Clock, BarChart3, 
   Settings, ShieldAlert, Sun, Moon, Briefcase, Calendar, LogOut
@@ -11,7 +12,15 @@ import {
 
 export const Sidebar = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const { role, org, activeProject, theme, toggleTheme, user } = useApp();
+
+  const handleSignOut = async () => {
+    if (isSupabaseConfigured) {
+      await supabase!.auth.signOut();
+    }
+    router.push('/auth');
+  };
 
   const isClient = role === 'client';
   const isAdmin = role === 'super_admin';
@@ -171,20 +180,24 @@ export const Sidebar = () => {
         <div className="flex items-center justify-between">
           <button
             onClick={toggleTheme}
-            className="flex items-center justify-center p-2 rounded-lg border border-border hover:bg-muted transition-all duration-200 text-muted-foreground hover:text-foreground"
+            className="flex items-center justify-center p-2 rounded-lg border border-border hover:bg-muted transition-all duration-200 text-muted-foreground hover:text-foreground cursor-pointer"
             title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
           >
             {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
           </button>
           
-          <span className="text-[10px] font-semibold text-muted-foreground uppercase">
-            v1.0 (Sandbox)
-          </span>
+          <button
+            onClick={handleSignOut}
+            className="flex items-center justify-center p-2 rounded-lg border border-border hover:bg-destructive/10 hover:border-destructive/30 hover:text-destructive transition-all duration-200 text-muted-foreground cursor-pointer"
+            title="Log Out"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
         </div>
 
         {/* User Card */}
         {user && (
-          <div className="flex items-center gap-3 pt-1">
+          <Link href="/profile" className="flex items-center gap-3 pt-1 hover:bg-muted/50 p-1.5 rounded-xl transition-all cursor-pointer">
             <img 
               src={user.avatar_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'} 
               className="w-9 h-9 rounded-full object-cover border border-border"
@@ -198,7 +211,7 @@ export const Sidebar = () => {
                 {user.designation || 'Member'}
               </span>
             </div>
-          </div>
+          </Link>
         )}
       </div>
     </aside>
