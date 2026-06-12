@@ -23,7 +23,7 @@ export const Sidebar = () => {
   };
 
   const isClient = role === 'client';
-  const isAdmin = role === 'super_admin';
+  const isAdmin = role === 'super_admin' || role === 'org_admin';
   const isPM = role === 'project_manager';
 
   // Navigation schema depending on active role

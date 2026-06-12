@@ -32,7 +32,7 @@ export default function BacklogPage({ params }: { params: Promise<{ projectId: s
     'backlog': true
   });
 
-  const canManage = role === 'super_admin' || role === 'project_manager';
+  const canManage = role === 'super_admin' || role === 'org_admin' || role === 'project_manager';
 
   const fetchData = async () => {
     try {

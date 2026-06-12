@@ -31,11 +31,12 @@ export const AddMemberModal = ({ isOpen, onClose, onSuccess }: AddMemberModalPro
   const getAllowedRoles = (): { value: UserRole; label: string }[] => {
     switch (currentUserRole) {
       case 'super_admin':
+      case 'org_admin':
         return [
-          { value: 'super_admin', label: 'Admin' },
           { value: 'project_manager', label: 'Project Manager' },
           { value: 'team_member', label: 'Team Member' },
           { value: 'client', label: 'Client' },
+          { value: 'org_admin', label: 'Admin' },
         ];
       case 'project_manager':
         return [

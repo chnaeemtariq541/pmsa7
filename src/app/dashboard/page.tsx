@@ -104,7 +104,7 @@ export default function DashboardPage() {
           {/* Quick actions */}
           {role !== 'client' && (
             <div className="flex items-center gap-3">
-              {(role === 'super_admin' || role === 'project_manager') && (
+              {(role === 'super_admin' || role === 'org_admin' || role === 'project_manager') && (
                 <Link 
                   href="/projects" 
                   className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold shadow-sm transition-all duration-200 cursor-pointer"
