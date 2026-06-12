@@ -139,6 +139,39 @@ BEGIN
   DELETE FROM public.profiles WHERE email = new.email;
   DELETE FROM public.profiles WHERE id = new.id;
 
+  -- Ensure default organization exists (Self-Healing)
+  IF NOT EXISTS (SELECT 1 FROM public.organizations WHERE id = org_id) THEN
+    INSERT INTO public.organizations (id, name, logo_url, timezone, currency)
+    VALUES (
+      org_id,
+      'Sheikho & Tolvi LLC',
+      'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=128&h=128&fit=crop&auto=format',
+      'America/New_York',
+      'USD'
+    );
+  END IF;
+
+  -- Ensure projects exist (Self-Healing)
+  IF NOT EXISTS (SELECT 1 FROM public.projects WHERE id = '00000000-0000-0000-0000-000000000002') THEN
+    INSERT INTO public.projects (id, organization_id, name, code, description, priority, status)
+    VALUES ('00000000-0000-0000-0000-000000000002', org_id, 'Colgate Pakistan Website', 'CPW', 'Design and develop the new high-converting marketing website for Colgate Pakistan.', 'critical', 'active') ON CONFLICT DO NOTHING;
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM public.projects WHERE id = '00000000-0000-0000-0000-000000000003') THEN
+    INSERT INTO public.projects (id, organization_id, name, code, description, priority, status)
+    VALUES ('00000000-0000-0000-0000-000000000003', org_id, 'Packages Mall Mobile App', 'PMA', 'Develop the new iOS and Android packages mall companion application.', 'high', 'planning') ON CONFLICT DO NOTHING;
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM public.projects WHERE id = '00000000-0000-0000-0000-000000000004') THEN
+    INSERT INTO public.projects (id, organization_id, name, code, description, priority, status)
+    VALUES ('00000000-0000-0000-0000-000000000004', org_id, 'Lux Website', 'LW', 'Create a luxurious, high-converting digital storefront website for Lux Pakistan.', 'medium', 'completed') ON CONFLICT DO NOTHING;
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM public.projects WHERE id = '00000000-0000-0000-0000-000000000005') THEN
+    INSERT INTO public.projects (id, organization_id, name, code, description, priority, status)
+    VALUES ('00000000-0000-0000-0000-000000000005', org_id, 'Pak Army Web Portal', 'PAWP', 'Design and implement the high-security portal and intranet directory.', 'critical', 'active') ON CONFLICT DO NOTHING;
+  END IF;
+
   -- Create user profile inside profiles table
   INSERT INTO public.profiles (id, name, email, avatar_url, designation)
   VALUES (
@@ -237,3 +270,9 @@ BEGIN
   RETURN new;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Re-bind the trigger to ensure the new function is active
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
