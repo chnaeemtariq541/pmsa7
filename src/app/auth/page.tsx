@@ -78,20 +78,51 @@ export default function AuthPage() {
         setLoading(false);
         if (view === 'login') {
           // Attempt to match mock profile
-          const matchedProfile = allProfiles.find(p => p.email === email);
-          if (matchedProfile) {
-            if (matchedProfile.id === 'usr-client') {
+          const matchedProfile = allProfiles.find(p => p.email.toLowerCase() === email.toLowerCase());
+          
+          // Predefined passwords matching Name + 123
+          const passwordMap: Record<string, string> = {
+            'naeemtariq451@gmail.com': 'Naeem123',
+            'taleem@a7logics.com': 'Taleem123',
+            'salman@a7logics.com': 'Salman123',
+            'javaid@a7logics.com': 'Javaid123',
+            'zain@a7logics.com': 'Zain123',
+            'bilal@a7logics.com': 'Bilal123',
+            'hamza@a7logics.com': 'Hamza123',
+            'ali@a7logics.com': 'Ali123',
+            'umar@a7logics.com': 'Umar123',
+            'usman@a7logics.com': 'Usman123',
+            'tariq@clientcorp.com': 'Tariq123',
+            'faisal@clientcorp.com': 'Faisal123',
+            'kamran@clientcorp.com': 'Kamran123',
+            'rizwan@clientcorp.com': 'Rizwan123',
+          };
+          
+          const expectedPassword = passwordMap[email.toLowerCase()] || 'Password123';
+          
+          if (matchedProfile && password === expectedPassword) {
+            // Resolve role based on user ID
+            if (matchedProfile.id === 'usr-super-admin') {
+              handleQuickSignIn('super_admin');
+            } else if (
+              matchedProfile.id === 'usr-client' || 
+              matchedProfile.id === 'usr-client-faisal' || 
+              matchedProfile.id === 'usr-client-kamran' || 
+              matchedProfile.id === 'usr-client-rizwan'
+            ) {
               handleQuickSignIn('client');
-            } else if (matchedProfile.id === 'usr-team-member-1') {
+            } else if (
+              matchedProfile.id === 'usr-team-member-1' || 
+              matchedProfile.id === 'usr-team-member-2' || 
+              matchedProfile.id.startsWith('usr-tm-') || 
+              matchedProfile.id.startsWith('usr-team-')
+            ) {
               handleQuickSignIn('team_member');
-            } else if (matchedProfile.id === 'usr-project-manager') {
-              handleQuickSignIn('project_manager');
             } else {
-              handleQuickSignIn('org_admin');
+              handleQuickSignIn('project_manager'); // Taleem Hussain, Hafiz Salman, Javaid Khadim
             }
           } else {
-            // Log in as org admin by default
-            handleQuickSignIn('org_admin');
+            setError('Invalid email or password. Predefined credentials match: Name + 123 (e.g. Taleem123).');
           }
         } else if (view === 'signup') {
           setSuccessMsg('Registration successful! Check your email (Simulated).');
@@ -163,7 +194,7 @@ export default function AuthPage() {
               {view === 'verification' && 'Confirm your email'}
             </h2>
             <p className="text-slate-400 text-xs mt-1 leading-normal">
-              {view === 'login' && 'Enter your credentials or select a sandbox profile below.'}
+              {view === 'login' && 'Enter your organizational credentials to sign in.'}
               {view === 'signup' && 'Fill out your profile details to join the organization.'}
               {view === 'forgot' && 'Provide your email address to receive recovery instructions.'}
               {view === 'verification' && 'Please confirm the verification code sent to your email.'}

@@ -696,12 +696,25 @@ const getDb = (): MockDatabaseSchema => {
     return createInitialMockData();
   }
   const data = localStorage.getItem(STORAGE_KEY);
-  if (!data) {
+  let parsed = null;
+  if (data) {
+    try {
+      parsed = JSON.parse(data);
+      // Auto-migrate if Jane Doe (old seed admin) is still present
+      const hasOldAdmin = parsed.profiles?.some((p: any) => p.email === 'jane.doe@acme.com');
+      if (hasOldAdmin) {
+        parsed = null; // force re-seed
+      }
+    } catch (e) {
+      parsed = null;
+    }
+  }
+  if (!parsed) {
     const seed = createInitialMockData();
     localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
     return seed;
   }
-  return JSON.parse(data);
+  return parsed;
 };
 
 const saveDb = (db: MockDatabaseSchema) => {
